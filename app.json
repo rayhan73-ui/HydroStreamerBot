@@ -20,16 +20,16 @@
             "value": "True"
         },
         "API_ID": {
-            "description": "35136211"
+            "description": "Get this value from https://my.telegram.org"
         },
         "API_HASH": {
-            "description": "894f464de5853560721348975f4422bf"
+            "description": "Get this value from https://my.telegram.org"
         },
         "BOT_TOKEN": {
-            "description": ""
+            "description": "Get this value from @BotFather"
         },
         "BIN_CHANNEL": {
-            "description": "-1003559740630"
+            "description": "The BIN Channel ID. Read the readme for more info about this var"
         },
         "DATABASE_URL": {
             "description": "MongoDB URI eg: mongodb://admin:pAswaRd@192.168.27.1"
@@ -64,7 +64,7 @@
             "value": "True"
         },
         "OWNER_ID": {
-            "description": "8233097387"
+            "description": "Your Telegram User ID(Note: Not Username)"
         },
         "UPDATES_CHANNEL": {
             "description": "Update Channel Username without @ eg: AWeirdText",
