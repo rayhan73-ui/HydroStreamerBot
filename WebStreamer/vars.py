@@ -5,13 +5,12 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-
 class Var(object):
     MULTI_CLIENT = False
     API_ID = int(environ.get("API_ID"))
     API_HASH = str(environ.get("API_HASH"))
     BOT_TOKEN = str(environ.get("BOT_TOKEN"))
-    SLEEP_THRESHOLD = int(environ.get("SLEEP_THRESHOLD", "60"))  # 1 minte
+    SLEEP_THRESHOLD = int(environ.get("SLEEP_THRESHOLD", "60"))  # 1 minute
     WORKERS = int(environ.get("WORKERS", "6"))  # 6 workers = 6 commands at once
     BIN_CHANNEL = int(
         environ.get("BIN_CHANNEL")
@@ -19,12 +18,20 @@ class Var(object):
     PORT = int(environ.get("PORT", 8080))
     BIND_ADDRESS = str(environ.get("WEB_SERVER_BIND_ADDRESS", "0.0.0.0"))
     PING_INTERVAL = int(environ.get("PING_INTERVAL", "1200"))  # 20 minutes
-    HAS_SSL = str(environ.get("HAS_SSL", "0").lower()) in ("1", "true", "t", "yes", "y")
-    NO_PORT = str(environ.get("NO_PORT", "0").lower()) in ("1", "true", "t", "yes", "y")
+    
+    # SSL এবং Port লজিক সংশোধন (Render এর জন্য বিশেষ পরিবর্তন)
+    HAS_SSL = str(environ.get("HAS_SSL", "1").lower()) in ("1", "true", "t", "yes", "y")
+    NO_PORT = str(environ.get("NO_PORT", "1").lower()) in ("1", "true", "t", "yes", "y")
     FQDN = str(environ.get("FQDN", BIND_ADDRESS))
-    URL = "http{}://{}{}/".format(
-            "s" if HAS_SSL else "", FQDN, "" if NO_PORT else ":" + str(PORT)
-        )
+    
+    # URL তৈরির স্মার্ট লজিক
+    if "onrender.com" in FQDN:
+        # Render ডোমেইন হলে সরাসরি HTTPS ব্যবহার করবে এবং পোর্ট দেখাবে না
+        URL = f"https://{FQDN}/"
+    else:
+        URL = "http{}://{}{}/".format(
+                "s" if HAS_SSL else "", FQDN, "" if NO_PORT else ":" + str(PORT)
+            )
 
     DATABASE_URL = str(environ.get('DATABASE_URL'))
     UPDATES_CHANNEL = str(environ.get('UPDATES_CHANNEL', "Telegram"))
@@ -36,11 +43,15 @@ class Var(object):
 
     KEEP_ALIVE = str(environ.get("KEEP_ALIVE", "0").lower()) in  ("1", "true", "t", "yes", "y")
     IMAGE_FILEID = environ.get('IMAGE_FILEID', "https://cdn.jsdelivr.net/gh/fyaz05/Resources@main/HydroStreamerBot/My%20Files.jpeg")
+    
     TOS = environ.get("TOS", None)
     if TOS:
-        response = request.urlopen(TOS)
-        data = response.read().decode('utf-8')
-        TOS = data.strip()
+        try:
+            response = request.urlopen(TOS)
+            data = response.read().decode('utf-8')
+            TOS = data.strip()
+        except:
+            TOS = None
 
     MODE = environ.get("MODE", "primary")
     SECONDARY = True if MODE.lower() == "secondary" else False
